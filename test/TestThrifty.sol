@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/Thrifty.sol";
+import "./helpers/Hacker.sol";
 
 contract TestThrifty {
    uint public initialBalance = 1 ether;
@@ -10,7 +11,7 @@ contract TestThrifty {
    Thrifty wallet;
 
    function beforeAll() public {
-     wallet = new Thrifty(); 
+     wallet = new Thrifty();
    }
 
    function testEmptyWalletHasZeroBalance() public {
@@ -19,5 +20,16 @@ contract TestThrifty {
 
    function testEmptyWalletHasZeroDailyLimit() public {
      Assert.equal(wallet.dailyLimit(), 0, "A new wallet will not allow withdrawl until the owner sets a daily limit");
+   }
+
+   function testOwnerCanSetDailyLimit() public {
+     wallet.setDailyLimit(10 ether);
+     
+     Assert.equal(wallet.dailyLimit(), 10 ether, "The setter should update the daily limit to 10 ether");
+
+     Hacker h = (new Hacker).value(1 ether)();
+     Assert.isFalse(h.setDailyLimitOn(wallet), "Expected hacker to get an exception because they are not the owner");
+
+     Assert.equal(wallet.dailyLimit(), 10 ether, "The limit should stil be 10 because only the owner can update");
    }
 }
