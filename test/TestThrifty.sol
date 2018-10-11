@@ -15,7 +15,7 @@ contract TestThrifty {
    }
 
    function testEmptyWalletHasZeroBalance() public {
-     Assert.equal(address(wallet).balance, 0, "A new, empty wallet should have zro balance");
+     Assert.equal(address(wallet).balance, 0, "A new, empty wallet should have zero balance");
    }
 
    function testEmptyWalletHasZeroDailyLimit() public {
