@@ -4,6 +4,7 @@ contract Thrifty {
   address private owner;
   uint public dailyLimit;
 
+
   constructor() public {
     owner = msg.sender;
   }
@@ -11,6 +12,8 @@ contract Thrifty {
   function setDailyLimit(uint newLimit) public onlyOwner {
     dailyLimit = newLimit;
   }
+
+  function() external payable {}
 
   modifier onlyOwner() {
     require(msg.sender == owner);

@@ -6,7 +6,7 @@ import "../contracts/Thrifty.sol";
 import "./helpers/Hacker.sol";
 
 contract TestThrifty {
-   uint public initialBalance = 1 ether;
+   uint public initialBalance = 10 ether;
 
    Thrifty wallet;
 
@@ -31,5 +31,17 @@ contract TestThrifty {
      Assert.isFalse(h.setDailyLimitOn(wallet), "Expected hacker to get an exception because they are not the owner");
 
      Assert.equal(wallet.dailyLimit(), 10 ether, "The limit should stil be 10 because only the owner can update");
+   }
+
+   function testFundingWallet() public {
+     DeployedAddresses.Thrifty().transfer(200 wei);
+     Assert.equal(DeployedAddresses.Thrifty().balance, 200 wei, "A new, empty wallet should have zero balance");
+   }
+
+  
+
+   // A payable fallback function lets us test transfer calls
+   function() external payable {
+     
    }
 }
