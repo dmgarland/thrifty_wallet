@@ -3,6 +3,9 @@ pragma solidity ^0.4.24;
 contract Thrifty {
   address private owner;
   uint public dailyLimit;
+
+  event LogInt(uint n);
+  event LogAddress(address a);
   
   constructor() public {
     owner = msg.sender;
@@ -10,6 +13,10 @@ contract Thrifty {
 
   function setDailyLimit(uint newLimit) public onlyOwner {
     dailyLimit = newLimit;
+  }
+
+  function withdraw(uint amount) public {
+    owner.transfer(amount);
   }
 
   function() external payable {}

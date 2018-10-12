@@ -4,9 +4,10 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/Thrifty.sol";
 import "test/helpers/ThrowProxy.sol";
+import "test/helpers/GenericTest.sol";
 import "../contracts/helpers/OwnedWalletProxy.sol";
 
-contract TestThrifty {
+contract TestThrifty is GenericTest {
    uint public initialBalance = 10 ether;
 
    OwnedWalletProxy owner;
@@ -24,22 +25,28 @@ contract TestThrifty {
    }
 
    function testOwnerCanSetDailyLimit() public {
-     Thrifty(address(owner)).setDailyLimit(10 ether);
-     owner.execute();
+     Thrifty(address(owner)).setDailyLimit(100 wei);
+     Assert.isTrue(owner.execute(), "should work");
      
-     Assert.equal(owner.wallet().dailyLimit(), 10 ether, "The setter should update the daily limit to 10 ether");
+     Assert.equal(owner.wallet().dailyLimit(), 100 wei, "The setter should update the daily limit to 10 ether");
 
      ThrowProxy t = new ThrowProxy(address(owner.wallet()));
      Thrifty(address(t)).setDailyLimit(1000 ether);
      Assert.isFalse(t.execute.gas(200000 wei)(), "Expected an exception because the test contract doesn't own the wallet");
 
-     Assert.equal(owner.wallet().dailyLimit(), 10 ether, "The limit should stil be 10 because only the owner can update");
+     Assert.equal(owner.wallet().dailyLimit(), 100 wei, "The limit should stil be 10 because only the owner can update");
    }
 
    function testFundingWallet() public {
      owner.fundWallet(200 wei);
      
      Assert.equal(address(owner.wallet()).balance, 200 wei, "The amount is transferred to the smart contract account");
+   }
+
+   function testWithdrawingFundsUnderDailyLimit() public {
+     Thrifty(address(owner)).withdraw(10 wei);	     
+     assertChangesBy(owner.execute, owner.walletBalance, -10 wei, "Expected withdrawl to decrease wallet balance by 10 wei");      
+     Assert.equal(address(owner.wallet()).balance, 190 wei, "The wallet should have 190 wei remaining");
    }
 
    // A payable fallback function lets us test transfer calls
