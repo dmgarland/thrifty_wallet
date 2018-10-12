@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/Thrifty.sol";
-import "../contracts/helpers/Hacker.sol";
+import "test/helpers/ThrowProxy.sol";
 import "../contracts/helpers/OwnedWalletProxy.sol";
 
 contract TestThrifty {
@@ -29,8 +29,9 @@ contract TestThrifty {
      
      Assert.equal(owner.wallet().dailyLimit(), 10 ether, "The setter should update the daily limit to 10 ether");
 
-     Hacker h = Hacker(DeployedAddresses.Hacker());
-     Assert.isFalse(h.setDailyLimitOn(owner.wallet()), "Expected hacker to get an exception because they are not the owner");
+     ThrowProxy t = new ThrowProxy(address(owner.wallet()));
+     Thrifty(address(t)).setDailyLimit(1000 ether);
+     Assert.isFalse(t.execute.gas(200000 wei)(), "Expected an exception because the test contract doesn't own the wallet");
 
      Assert.equal(owner.wallet().dailyLimit(), 10 ether, "The limit should stil be 10 because only the owner can update");
    }
