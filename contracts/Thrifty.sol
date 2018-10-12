@@ -15,7 +15,7 @@ contract Thrifty {
     dailyLimit = newLimit;
   }
 
-  function withdraw(uint amount) public {
+  function withdraw(uint amount) public onlyOwner {
     require(amount <= dailyLimit);
     owner.transfer(amount);
   }
