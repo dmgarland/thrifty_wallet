@@ -39,7 +39,7 @@ contract TestThrifty {
    function testFundingWallet() public {
      owner.fundWallet(200 wei);
      
-     Assert.equal(address(owner.wallet()).balance, 200 wei, "A new, empty wallet should have zero balance");
+     Assert.equal(address(owner.wallet()).balance, 200 wei, "The amount is transferred to the smart contract account");
    }
 
    // A payable fallback function lets us test transfer calls
