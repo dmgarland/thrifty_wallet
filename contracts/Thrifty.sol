@@ -3,8 +3,7 @@ pragma solidity ^0.4.24;
 contract Thrifty {
   address private owner;
   uint public dailyLimit;
-
-
+  
   constructor() public {
     owner = msg.sender;
   }
