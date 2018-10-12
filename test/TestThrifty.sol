@@ -49,6 +49,13 @@ contract TestThrifty is GenericTest {
      Assert.equal(address(owner.wallet()).balance, 190 wei, "The wallet should have 190 wei remaining");
    }
 
+   function testWithdrawingMoreThanLimitRaisesError() public {
+     // Try and withdraw 200 wei
+     ThrowProxy t = new ThrowProxy(address(owner.wallet()));
+     Thrifty(address(t)).withdraw(200 wei);
+     Assert.isFalse(t.execute.gas(200000 wei)(), "Expected an exception because we've exceeded the daily limit");
+   }
+
    // A payable fallback function lets us test transfer calls
    function() external payable {
      
