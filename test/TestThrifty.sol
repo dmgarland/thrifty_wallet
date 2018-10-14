@@ -28,7 +28,7 @@ contract TestThrifty is GenericTest {
      Thrifty(address(owner)).setDailyLimit(100 wei);
      Assert.isTrue(owner.execute(), "should work");
      
-     Assert.equal(owner.wallet().dailyLimit(), 100 wei, "The setter should update the daily limit to 10 ether");
+     Assert.equal(owner.wallet().dailyLimit(), 100 wei, "The setter should update the daily limit to 10 wei");
 
      ThrowProxy t = new ThrowProxy(address(owner.wallet()));
      Thrifty(address(t)).setDailyLimit(1000 ether);
