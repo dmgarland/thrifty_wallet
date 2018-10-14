@@ -30,6 +30,7 @@ contract TestThrifty is GenericTest {
      
      Assert.equal(owner.wallet().dailyLimit(), 100 wei, "The setter should update the daily limit to 10 wei");
 
+     // Try withdrawing from the test contract
      ThrowProxy t = new ThrowProxy(address(owner.wallet()));
      Thrifty(address(t)).setDailyLimit(1000 ether);
      Assert.isFalse(t.execute.gas(200000 wei)(), "Expected an exception because the test contract doesn't own the wallet");
@@ -56,7 +57,7 @@ contract TestThrifty is GenericTest {
      Assert.isFalse(t.execute.gas(200000 wei)(), "Expected an exception because we've exceeded the daily limit");
    }
 
-   function testOwnerCanWithdraw() public {
+   function testThirdPartyCantWithdraw() public {
      ThrowProxy t = new ThrowProxy(address(owner.wallet()));
      Thrifty(address(t)).withdraw(100 wei);
      Assert.isFalse(t.execute.gas(200000 wei)(), "Expected an exception because the test contract doesn't own the wallet");
