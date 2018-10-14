@@ -2,12 +2,30 @@ pragma solidity ^0.4.24;
 
 import "../Thrifty.sol";
 
+// Test against a version of the contract where now is frozen in time
+contract MockThrifty is Thrifty {
+  uint private fakeNow;
+  event LogInt(uint n);
+
+  constructor(uint secondsSinceEpoch) public {
+    fakeNow = secondsSinceEpoch;
+  }
+  
+  function getCurrentTimestamp() view internal returns (uint) {     
+    return fakeNow;
+  }
+
+  function travel(uint newTimestamp) public {
+    fakeNow = newTimestamp;
+  }
+}
+
 contract OwnedWalletProxy {
-  Thrifty public wallet;
+  MockThrifty public wallet;
   bytes private data;
 
   constructor() public payable {
-    wallet = new Thrifty();
+    wallet = new MockThrifty(1539471600);
   }
 
   function() public payable {

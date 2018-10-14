@@ -4,6 +4,8 @@ import "truffle/Assert.sol";
 
 contract GenericTest {
   event LogInt(int n);
+  event LogUint(uint n);
+  event LogBool(bool b);
   
   function assertChangesBy(function() payable external returns (bool) action, function() view external returns (uint) check, int amount, string message) public {
     int beforeAmount = int(check());
